@@ -40,6 +40,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Demonstrates empty OpMode
  */
 @Autonomous(name="Auto Mecanum", group="Auto")
+@Disabled
 
 public class AutoMecanum extends LinearOpMode {
   RobotHardware robot = new RobotHardware(this);
@@ -51,7 +52,7 @@ public class AutoMecanum extends LinearOpMode {
     robot.init();
     waitForStart();
 
-    robot.driveMecanum(.5);
+    robot.driveMecanum(-.5);
     runtime.reset();
     while(opModeIsActive() && runtime.seconds()<3){
       telemetry.addData("Step 1", "Current runtime: "+ runtime.seconds()+"/3");

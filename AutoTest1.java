@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Demonstrates empty OpMode
  */
 @Autonomous(name="Auto Test 1", group="Auto")
-
+@Disabled
 public class AutoTest1 extends LinearOpMode {
     RobotHardware robot = new RobotHardware(this);
     private ElapsedTime runtime = new ElapsedTime();

@@ -119,81 +119,88 @@ public class Autonomous extends LinearOpMode {
          if(updatedRecognitions != null) {
            for(Recognition recognitions : updatedRecognitions) {
               labelExists = recognitions.getLabel(); //grabs a label from the updatedRecognitions
-              if(labelExists.isEmpty() == false){ //detects if the string has a label in it
+              if(labelExists != null){ //detects if the string has a label in it
                 telemetry.addData("The label exists", "moving onto movement");
                 telemetry.update();
                 break; //breaks out of for loop
               }
            }
-           if (labelExists.isEmpty() == false)
+           if (labelExists != null)
            {
 
              if (labelExists.equals("1 Bolt"))  //moves the robot up and to the left if tflow reads "1 Bolt"
              {
                //use robotHardware to move up and to the left
-               robot.driveMecanum(0.5);
+               robot.driveMecanum(0.4);
                runtime.reset();
-               while(opModeIsActive() && runtime.seconds() < 2.5) //makes robot drive forward for 2.5 seconds
+               while(opModeIsActive() && runtime.seconds() < 1) //makes robot drive forward for 2.5 seconds
                {
-                 telemetry.addData("Step 1", "Current runtime: " + runtime.seconds() + "/2.5");
+                 telemetry.addData("Step 1", "Current runtime: " + runtime.seconds() + "/1");
                  telemetry.update();
                }
-               robot.resetWheels();
-               robot.strafeMecanum(0.5);
+               //robot.resetWheels();
+               robot.stop();
+               robot.strafeMecanum(0.4);//positive values moves left
                runtime.reset();
-               while(opModeIsActive() && runtime.seconds() < 1)
+               while(opModeIsActive() && runtime.seconds() < 1.5)
                {
-                 telemetry.addData("Step 2", "Current runtime: " + runtime.seconds() + "/1");
+                 telemetry.addData("Step 2", "Current runtime: " + runtime.seconds() + "/1.5");
                  telemetry.update();
                }
-               robot.resetWheels();
+               robot.stop();
+               break;
+               //robot.resetWheels();
              }
              // Moves the robot straight forward if tflow reads "2 Bulb"
-             else if (labelExists.equals("2 Bulb")) {
+             else if (labelExists.equals("2 Bulb")) { //needs else if
                //use robotHardware to move up
-               robot.driveMecanum(.5);
+               robot.driveMecanum(.4);
                runtime.reset();
-               while(opModeIsActive() && runtime.seconds()<2.5){
-                 telemetry.addData("Step 1", "Current runtime: "+ runtime.seconds()+"/2.5");
+               while(opModeIsActive() && runtime.seconds()<1){
+                 telemetry.addData("Step 1", "Current runtime: "+ runtime.seconds()+"/1");
                  telemetry.update();
                }
-               robot.resetWheels();
+               //robot.resetWheels();
                robot.stop();
 
                telemetry.addData("Robot Status:", "Complete");
                telemetry.update();
+               break;
              }
              //moves the robot up and to the right if tflow reads "3 Panel"
              else if (labelExists.equals("3 Panel")) {
                //use robotHardware to move up and to the right
-               robot.driveMecanum(0.5);
+               robot.driveMecanum(.4);
                runtime.reset();
-               while(opModeIsActive() && runtime.seconds() < 2.5){
-                 telemetry.addData("Step 1", "Current runtime: " + runtime.seconds() + "/2.5");
+               while(opModeIsActive() && runtime.seconds() < 1){
+                 telemetry.addData("Step 1", "Current runtime: " + runtime.seconds() + "/1");
                  telemetry.update();
                }
-               robot.resetWheels();
-               robot.strafeMecanum(0.5);
+               robot.stop();
+               //robot.resetWheels();
+               robot.strafeMecanum(-0.4); //negative moves right
                runtime.reset();
-               while(opModeIsActive() && runtime.seconds() < 1)
+               while(opModeIsActive() && runtime.seconds() < 1.5)
                {
-                 telemetry.addData("Step 2", "Current runtime: " + runtime.seconds() + "/1");
+                 telemetry.addData("Step 2", "Current runtime: " + runtime.seconds() + "/1.5");
                  telemetry.update();
                }
+               robot.stop();
+               break;
              }
 
            }
-           break;
+
          }
        }
      }
-   }
+   } /*
     else { // if we run out of time / FAILSAFE
      //use robotHardware to move up
-     robot.driveMecanum(.5);
+     robot.driveMecanum(-.5);
      runtime.reset();
-     while(opModeIsActive() && runtime.seconds()<2.5){
-       telemetry.addData("Step 1", "Current runtime: "+ runtime.seconds()+"/2.5");
+     while(opModeIsActive() && runtime.seconds()<1){
+       telemetry.addData("Step 1", "Current runtime: "+ runtime.seconds()+"/1");
        telemetry.update();
      }
      robot.resetWheels();
@@ -201,7 +208,7 @@ public class Autonomous extends LinearOpMode {
 
      telemetry.addData("Robot Status:", "Complete");
      telemetry.update();
-   }
+   }*/
 
     sleep(1000);
 

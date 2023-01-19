@@ -77,9 +77,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     private DcMotor leftBackDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
-    private DcMotor arm = null;
-    private DcMotor arm_inverted = null;
-    private DcMotor arm2 = null; //second arm
+    private DcMotor arm_left = null;
+    private DcMotor arm_right = null;
+    private DcMotor arm_upper = null;
     private Servo claw = null;
 
     @Override
@@ -91,9 +91,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        arm_inverted = hardwareMap.get(DcMotor.class, "arm_inverted");
-        arm2 = hardwareMap.get(DcMotor.class, "arm2");
+        arm_right = hardwareMap.get(DcMotor.class, "arm_right");
+        arm_left = hardwareMap.get(DcMotor.class, "arm_left");
+        arm_upper = hardwareMap.get(DcMotor.class, "arm_upper");
         claw = hardwareMap.get(Servo.class, "claw");
 
         // ########################################################################################
@@ -110,7 +110,8 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        arm_inverted.setDirection(DcMotor.Direction.REVERSE); //reverses inverted arm position
+        arm_right.setDirection(DcMotor.Direction.REVERSE);
+        arm_upper.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -127,6 +128,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral =  gamepad1.left_stick_x;
             double yaw     =  gamepad1.right_stick_x;
+
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
@@ -165,60 +167,38 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             rightBackPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad
             */
             RobotHardware robot = new RobotHardware(this);
-            // if A is pressed, take off the breaks and lower arm
-            if(gamepad2.a == true) {
-                arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                arm_inverted.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                arm.setPower(-0.5);
-                arm_inverted.setPower(-0.5);
-            }
-            // If Y is pressed, take off breaks and raise arm
-            else if(gamepad2.y == true){
-                arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                arm_inverted.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                arm.setPower(0.5);
-                arm_inverted.setPower(0.5);
-            }
 
-            //if button x is pressed, remove the breaks and raise the arm by 0.5 speed
-            else if (gamepad2.x == true){
-                arm2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                arm2.setPower(0.5);
+            if(gamepad2.a) {
+                arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                arm_left.setPower(0.25);
+                arm_right.setPower(0.25);
+                arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            } else if(gamepad2.b){
+                arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                arm_left.setPower(-0.25);
+                arm_right.setPower(-0.25);
+                arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            } else if(gamepad2.right_bumper){
+                arm_upper.setPower(0.5);
+                arm_upper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            } else if(gamepad2.left_bumper){
+                arm_upper.setPower(-0.5);
+                arm_upper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            } else {
+                arm_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                arm_left.setPower(0);
+                arm_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                arm_right.setPower(0);
+                arm_upper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                arm_upper.setPower(0);
             }
-            //if button b is pressed, remove the breaks and lower the arm by 0.5 speed
-            else if (gamepad2.b == true) {
-                arm2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                arm2.setPower(-0.5);
-            }
-            // if left bumper is pressed - remove the breaks and raise all arms by 0.5 speed
-            else if (gamepad2.left_bumper == true){
-                arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                arm_inverted.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                arm2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                arm.setPower(0.5);
-                arm_inverted.setPower(0.5);
-                arm2.setPower(0.5);
-            }
-                //if no buttons pressed - pump the breaks and set arm power to zero
-            else {
-                 arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                 arm_inverted.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                 arm2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                 arm.setPower(0);
-                 arm_inverted.setPower(0);
-                 arm2.setPower(0);
-            }
-
-            // if right trigger is pressed, close the claw as much as possible
             if(gamepad2.right_trigger >= 0.3) {
                 claw.setPosition(1.0);
-            }
-            else { //if right trigger isn't pressed open the claw
+            } else {
                 claw.setPosition(0);//place holder
             }
 
             // Send calculated power to wheels
-            //set the calculated power to half speed for better control
             leftFrontDrive.setPower(leftFrontPower /2);
             rightFrontDrive.setPower(rightFrontPower /2);
             leftBackDrive.setPower(leftBackPower /2);

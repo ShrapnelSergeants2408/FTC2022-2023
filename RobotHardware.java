@@ -66,7 +66,9 @@ public class RobotHardware {
     private DcMotor frontRightDrive  = null;
     private DcMotor backLeftDrive = null;
     private DcMotor backRightDrive = null;
-    private DcMotor armMotor = null;
+    private DcMotor arm_left = null;
+    private DcMotor arm_right = null;
+    private DcMotor arm_upper = null;
     private Servo   leftHand = null;
     private Servo   rightHand = null;
 
@@ -92,7 +94,6 @@ public class RobotHardware {
         frontRightDrive  = MecanumTeleop.hardwareMap.get(DcMotor.class, "right_front_drive");
         backLeftDrive    = MecanumTeleop.hardwareMap.get(DcMotor.class, "left_back_drive");
         backRightDrive   = MecanumTeleop.hardwareMap.get(DcMotor.class, "right_back_drive");
-        //armMotor   = myOpMode.hardwareMap.get(DcMotor.class, "arm");
 
         frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -154,10 +155,10 @@ public class RobotHardware {
 
     }
     public void driveMecanum(double Speed){
-        frontLeftDrive.setPower(-1*Speed);
-        backLeftDrive.setPower(-1*Speed);
-        frontRightDrive.setPower(-1*Speed);
-        backRightDrive.setPower(-1*Speed);
+        frontLeftDrive.setPower(Speed);
+        backLeftDrive.setPower(Speed);
+        frontRightDrive.setPower(Speed);
+        backRightDrive.setPower(Speed);
     }
 
     public void resetWheels(){
