@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Demonstrates empty OpMode
  */
 @TeleOp(name = "Mecanum Teleop", group = "Teleop")
+@Disabled
 public class MecanumTeleop extends LinearOpMode {
   RobotHardware robot = new RobotHardware(this);
   @Override

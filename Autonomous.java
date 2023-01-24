@@ -52,6 +52,7 @@ public class Autonomous extends LinearOpMode {
   RobotHardware robot = new RobotHardware(this);
   private ElapsedTime runtime = new ElapsedTime();
   private ElapsedTime autonomousTime = new ElapsedTime();
+  private boolean failsafeTrigger = true;
 
   private static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
   // private static final String TFOD_MODEL_FILE  = "/sdcard/FIRST/tflitemodels/CustomTeamModel.tflite";
@@ -133,7 +134,7 @@ public class Autonomous extends LinearOpMode {
                //use robotHardware to move up and to the left
                robot.driveMecanum(0.4);
                runtime.reset();
-               while(opModeIsActive() && runtime.seconds() < 1) //makes robot drive forward for 2.5 seconds
+               while(opModeIsActive() && runtime.seconds() < 1.2) //makes robot drive forward for 2.5 seconds
                {
                  telemetry.addData("Step 1", "Current runtime: " + runtime.seconds() + "/1");
                  telemetry.update();
@@ -148,6 +149,7 @@ public class Autonomous extends LinearOpMode {
                  telemetry.update();
                }
                robot.stop();
+               failsafeTrigger = false;
                break;
                //robot.resetWheels();
              }
@@ -165,6 +167,7 @@ public class Autonomous extends LinearOpMode {
 
                telemetry.addData("Robot Status:", "Complete");
                telemetry.update();
+               failsafeTrigger = false;
                break;
              }
              //moves the robot up and to the right if tflow reads "3 Panel"
@@ -172,20 +175,21 @@ public class Autonomous extends LinearOpMode {
                //use robotHardware to move up and to the right
                robot.driveMecanum(.4);
                runtime.reset();
-               while(opModeIsActive() && runtime.seconds() < 1){
-                 telemetry.addData("Step 1", "Current runtime: " + runtime.seconds() + "/1");
+               while(opModeIsActive() && runtime.seconds() < 1.2){
+                 telemetry.addData("Step 1", "Current runtime: " + runtime.seconds() + "/1.2");
                  telemetry.update();
                }
                robot.stop();
                //robot.resetWheels();
                robot.strafeMecanum(-0.4); //negative moves right
                runtime.reset();
-               while(opModeIsActive() && runtime.seconds() < 1.5)
+               while(opModeIsActive() && runtime.seconds() < 1.2)
                {
                  telemetry.addData("Step 2", "Current runtime: " + runtime.seconds() + "/1.5");
                  telemetry.update();
                }
                robot.stop();
+               failsafeTrigger = false;
                break;
              }
 
@@ -194,21 +198,22 @@ public class Autonomous extends LinearOpMode {
          }
        }
      }
-   } /*
-    else { // if we run out of time / FAILSAFE
-     //use robotHardware to move up
-     robot.driveMecanum(-.5);
+   }
+
+   if (failsafeTrigger) {
+     robot.driveMecanum(.4);
      runtime.reset();
-     while(opModeIsActive() && runtime.seconds()<1){
+     while(runtime.seconds()<1){
        telemetry.addData("Step 1", "Current runtime: "+ runtime.seconds()+"/1");
        telemetry.update();
      }
-     robot.resetWheels();
+     //robot.resetWheels();
      robot.stop();
 
      telemetry.addData("Robot Status:", "Complete");
      telemetry.update();
-   }*/
+     failsafeTrigger = false;
+   }
 
     sleep(1000);
 
